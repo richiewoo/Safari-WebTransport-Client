@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>WebTransport over HTTP/3 client (Safari-compatible)</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="client.js" defer></script>
+    <link rel="stylesheet" href="client.css" />
+  </head>
+  <body>
+    <div id="top">
+      <div id="explanation">
+        This tool can be used to connect to an arbitrary WebTransport server.
+        It has several limitations:
+        <ul>
+          <li>
+            It can only send an entirety of a stream at once. Once the stream
+            is opened, all of the data is immediately sent, and the write
+            side of the stream is closed.
+          </li>
+          <li>
+            This tool does not listen to server-initiated bidirectional
+            streams.
+          </li>
+          <li>
+            Stream IDs are different from the one used by QUIC on the wire,
+            as the on-the-wire IDs are not exposed via the Web API.
+          </li>
+          <li>
+            The <code>WebTransport</code> object can be accessed using the
+            developer console via <code>currentTransport</code>.
+          </li>
+          <li>
+            <strong>Safari support:</strong> WebTransport shipped in Safari
+            starting with version 26.4 (macOS/iOS). Older Safari versions do
+            not implement the API at all, and this page will tell you so
+            instead of failing silently.
+          </li>
+        </ul>
+      </div>
+      <div id="tool">
+        <h1>WebTransport over HTTP/3 client</h1>
+        <div id="support-banner" class="hidden"></div>
+        <div>
+          <h2>Establish WebTransport connection</h2>
+          <div class="input-line">
+            <label for="url">URL:</label>
+            <input
+              type="text"
+              name="url"
+              id="url"
+              value="https://localhost:4433/counter"
+            />
+            <input
+              type="button"
+              id="connect"
+              value="Connect"
+              onclick="connect()"
+            />
+          </div>
+        </div>
+        <div>
+          <h2>Send data over WebTransport</h2>
+          <form name="sending">
+            <textarea name="data" id="data"></textarea>
+            <div>
+              <input
+                type="radio"
+                name="sendtype"
+                value="datagram"
+                id="datagram"
+                checked
+              />
+              <label for="datagram">Send a datagram</label>
+            </div>
+            <div>
+              <input type="radio" name="sendtype" value="unidi" id="unidi-stream" />
+              <label for="unidi-stream">Open a unidirectional stream</label>
+            </div>
+            <div>
+              <input type="radio" name="sendtype" value="bidi" id="bidi-stream" />
+              <label for="bidi-stream">Open a bidirectional stream</label>
+            </div>
+            <input
+              type="button"
+              id="send"
+              name="send"
+              value="Send data"
+              disabled
+              onclick="sendData()"
+            />
+          </form>
+        </div>
+        <div>
+          <h2>Event log</h2>
+          <ul id="event-log"></ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
